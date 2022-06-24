@@ -61,10 +61,10 @@ namespace Seq.Api.Client
         /// <param name="useDefaultCredentials">Whether default credentials will be sent with HTTP requests; the default is <c>true</c>.</param>
         [Obsolete("Prefer `SeqApiClient(serverUrl, apiKey, handler => handler.UseDefaultCredentials = true)` instead."), EditorBrowsable(EditorBrowsableState.Never)]
         public SeqApiClient(string serverUrl, string apiKey, bool useDefaultCredentials)
-            : this(serverUrl, apiKey, handler => handler.UseDefaultCredentials = useDefaultCredentials)
+            : this(serverUrl, handler => handler.UseDefaultCredentials = useDefaultCredentials, apiKey)
         {
         }
-
+        
         /// <summary>
         /// Construct a <see cref="SeqApiClient"/>.
         /// </summary>
@@ -72,17 +72,19 @@ namespace Seq.Api.Client
         /// <param name="apiKey">An API key to use when making requests to the server, if required.</param>
         /// <param name="configureHttpClientHandler">An optional callback to configure the <see cref="HttpClientHandler"/> used when making HTTP requests
         /// to the Seq API.</param>
-        public SeqApiClient(string serverUrl, string apiKey = null, Action<HttpClientHandler> configureHttpClientHandler = null)
+        public SeqApiClient(string serverUrl, Action<HttpClientHandler> configureHttpClientHandler, string apiKey = null)
         {
             ServerUrl = serverUrl ?? throw new ArgumentNullException(nameof(serverUrl));
 
             if (!string.IsNullOrEmpty(apiKey))
                 _apiKey = apiKey;
 
-            var handler = new HttpClientHandler
-            {
-                CookieContainer = _cookies
-            };
+            var handler = new HttpClientHandler();
+
+            // var handler = new HttpClientHandler
+            // {
+            //     CookieContainer = _cookies
+            // };
 
             configureHttpClientHandler?.Invoke(handler);
 

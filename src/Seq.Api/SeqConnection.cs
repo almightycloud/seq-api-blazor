@@ -52,13 +52,24 @@ namespace Seq.Api
         /// Construct a <see cref="SeqConnection"/>.
         /// </summary>
         /// <param name="serverUrl">The base URL of the Seq server.</param>
-        /// <param name="apiKey">An API key to use when making requests to the server, if required.</param>
         /// <param name="configureHttpClientHandler">An optional callback to configure the <see cref="HttpClientHandler"/> used when making HTTP requests
-        /// to the Seq API.</param>
-        public SeqConnection(string serverUrl, string apiKey = null, Action<HttpClientHandler> configureHttpClientHandler = null)
+        ///     to the Seq API.</param>
+        /// <param name="apiKey">An API key to use when making requests to the server, if required.</param>
+        public SeqConnection(string serverUrl, Action<HttpClientHandler> configureHttpClientHandler, string apiKey = null)
         {
             if (serverUrl == null) throw new ArgumentNullException(nameof(serverUrl));
-            Client = new SeqApiClient(serverUrl, apiKey, configureHttpClientHandler);
+            Client = new SeqApiClient(serverUrl, configureHttpClientHandler, apiKey);
+        }
+        
+        /// <summary>
+        /// Construct a <see cref="SeqConnection"/>.
+        /// </summary>
+        /// <param name="serverUrl">The base URL of the Seq server.</param>
+        /// <param name="apiKey">An API key to use when making requests to the server, if required.</param>
+        public SeqConnection(string serverUrl, string apiKey = null)
+        {
+            if (serverUrl == null) throw new ArgumentNullException(nameof(serverUrl));
+            Client = new SeqApiClient(serverUrl, handler => { handler.CookieContainer = new CookieContainer(); }, apiKey);
         }
         
         /// <summary>

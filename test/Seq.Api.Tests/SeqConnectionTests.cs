@@ -9,10 +9,10 @@ namespace Seq.Api.Tests
         {
             var callCount = 0;
 
-            using var _ = new SeqConnection("https://test.example.com", null, handler => { 
+            using var _ = new SeqConnection("https://test.example.com", handler => { 
                 Assert.NotNull(handler);
                 ++callCount;
-            });
+            }, null);
 
             Assert.Equal(1, callCount);
         }
